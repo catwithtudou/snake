@@ -11,7 +11,7 @@ import (
 	"github.com/1024casts/snake/pkg/conf"
 	redis2 "github.com/1024casts/snake/pkg/redis"
 
-	"github.com/1024casts/snake/pkg/schedule"
+	//"github.com/1024casts/snake/pkg/schedule"
 
 	"github.com/1024casts/snake/internal/model"
 	"github.com/1024casts/snake/pkg/log"
@@ -58,8 +58,8 @@ func New(cfg *conf.Config) *Application {
 	// init log
 	conf.InitLog()
 
-	// init schedule
-	schedule.Init()
+	//// init schedule
+	//schedule.Init()
 
 	if viper.GetString("app.run_mode") == ModeDebug {
 		app.Debug = true

@@ -85,12 +85,32 @@ func (m memoryCache) Get(key string, val interface{}) error {
 
 // MultiSet 批量set
 func (m memoryCache) MultiSet(valMap map[string]interface{}, expiration time.Duration) error {
-	panic("implement me")
+	 for k,v:=range  valMap{
+	 	cacheKey,err:=BuildCacheKey(m.KeyPrefix,k)
+	 	if err!= nil{
+			return errors.Wrapf(err, "build cache key err, key is %+v", k)
+		}
+		m.client.Store(cacheKey,newItem(v,expiration))
+	 }
+	 return nil
 }
 
 // MultiGet 批量获取
 func (m memoryCache) MultiGet(keys []string, val interface{}) error {
-	panic("implement me")
+	vales:=make([]interface{},len(keys))
+	for k,v:=range keys{
+		cacheKey,err := BuildCacheKey(m.KeyPrefix,v)
+		if err != nil {
+			return errors.Wrapf(err, "build cache key err, key is %+v", v)
+		}
+		reVal,ok := getValue(m.client.Load(cacheKey))
+		if !ok {
+			return errors.New("memory get value err")
+		}
+		vales[k]=reVal
+	}
+	val=vales
+	return nil
 }
 
 // Del 批量删除
@@ -113,10 +133,30 @@ func (m memoryCache) Del(keys ...string) error {
 
 // Incr 自增
 func (m memoryCache) Incr(key string, step int64) (int64, error) {
-	panic("implement me")
+	cacheKey,err := BuildCacheKey(m.KeyPrefix,key)
+	if err!=nil{
+		return 0,errors.Wrapf(err, "build cache key err, key is %+v", key)
+	}
+	val,ok:=getValue(m.client.Load(cacheKey))
+	if !ok{
+		return 0,errors.New("memory get value err")
+	}
+	reVal:= val.(int64) + step
+	m.client.Store(cacheKey,reVal)
+	return reVal,nil
 }
 
 // Decr 自减
 func (m memoryCache) Decr(key string, step int64) (int64, error) {
-	panic("implement me")
+	cacheKey,err := BuildCacheKey(m.KeyPrefix,key)
+	if err!=nil{
+		return 0,errors.Wrapf(err, "build cache key err, key is %+v", key)
+	}
+	val,ok:=getValue(m.client.Load(cacheKey))
+	if !ok{
+		return 0,errors.New("memory get value err")
+	}
+	reVal:= val.(int64) - step
+	m.client.Store(cacheKey,reVal)
+	return reVal,nil
 }

@@ -109,7 +109,7 @@ func (jz JSONGzipEncoding) Marshal(v interface{}) ([]byte, error) {
 	}
 	// var bufSizeBefore = len(buf)
 
-	buf, err = GzipEncode(buf)
+	buf, err = GzipEncode(buf,gzip.BestCompression)
 	// log.Infof("gzip_json_compress_ratio=%d/%d=%.2f", bufSizeBefore, len(buf), float64(bufSizeBefore)/float64(len(buf)))
 	return buf, err
 }
@@ -129,13 +129,13 @@ func (jz JSONGzipEncoding) Unmarshal(data []byte, value interface{}) error {
 }
 
 // GzipEncode 编码
-func GzipEncode(in []byte) ([]byte, error) {
+func GzipEncode(in []byte,gzipType int) ([]byte, error) {
 	var (
 		buffer bytes.Buffer
 		out    []byte
 		err    error
 	)
-	writer, err := gzip.NewWriterLevel(&buffer, gzip.BestCompression)
+	writer, err := gzip.NewWriterLevel(&buffer, gzipType)
 	if err != nil {
 		return nil, err
 	}
