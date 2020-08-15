@@ -139,9 +139,9 @@ func (repo *userRepo) GetUserByPhone(db *gorm.DB, phone int) (*model.UserBaseMod
 }
 
 // GetUserByEmail 根据邮箱获取手机号
-func (repo *userRepo) GetUserByEmail(db *gorm.DB, phone string) (*model.UserBaseModel, error) {
+func (repo *userRepo) GetUserByEmail(db *gorm.DB, email string) (*model.UserBaseModel, error) {
 	user := model.UserBaseModel{}
-	err := db.Where("email = ?", phone).First(&user).Error
+	err := db.Where("email = ?", email).First(&user).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "[user_repo] get user err by email")
 	}
